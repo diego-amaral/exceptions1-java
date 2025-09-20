@@ -7,14 +7,14 @@ import java.util.concurrent.TimeUnit;
 public class Reservation {
 
     private Integer roomNumber;
-    private Date checkin;
-    private Date checkout;
+    private Date checkIn;
+    private Date checkOut;
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public Reservation(Date checkout, Date checkin, Integer roomNumber) {
-        this.checkout = checkout;
-        this.checkin = checkin;
+    public Reservation(Date checkOut, Date checkIn, Integer roomNumber) {
+        this.checkOut = checkOut;
+        this.checkIn = checkIn;
         this.roomNumber = roomNumber;
     }
 
@@ -26,37 +26,38 @@ public class Reservation {
         this.roomNumber = roomNumber;
     }
 
-    public Date getCheckin() {
-        return checkin;
+    public Date getcheckIn() {
+        return checkIn;
     }
 
-    public Date getCheckout() {
-        return checkout;
+    public Date getcheckOut() {
+        return checkOut;
     }
 
     public long duration() {
-        long diff = checkout.getTime() - checkin.getTime();
+        long diff = checkOut.getTime() - checkIn.getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public void updateDates(Date checkin, Date checkout) {
-        this.checkin = checkin;
-        this.checkout = checkout;
+    public String updateDates(Date checkIn, Date checkOut) {
+        Date now = new Date();
+        if (checkIn.before(now) || (checkOut.before(now))) {
+            return "Reservation dates for update must be future dates";
+        }
+        if (!checkOut.after(checkIn)) {
+            return "Check-out date must be after Check-in date";
+        }
+
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+
+        return null;
     }
 
 
     @Override
     public String toString() {
-        return "Reservation: "
-                + "Room = "
-                + roomNumber
-                + ", checkin = "
-                + sdf.format(checkin) +
-                ", checkout = "
-                + sdf.format(checkout)
-                + ", "
-                + duration()
-                + " nights";
+        return "Reservation: " + "Room = " + roomNumber + ", checkIn = " + sdf.format(checkIn) + ", checkOut = " + sdf.format(checkOut) + ", " + duration() + " nights";
     }
 }
 
